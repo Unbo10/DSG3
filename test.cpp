@@ -11,8 +11,9 @@ int main() {
     cout << "B \n";
     arr.insert_at_end(10);
     cout << "C \n";
+    arr.change_data_at_position(arr.get_value(2), 0);
+    cout << "D \n";
     arr.print();
     cout << arr.size;
-    std::cout << "Hello!";
     return 0;
 }
