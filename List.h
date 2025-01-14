@@ -8,7 +8,7 @@ class List {
 
         List();
 
-        void insert_at_end(int data);
+        virtual void insert_at_end(int data);
 
         void change_data_at_position(int data, int position);
 
