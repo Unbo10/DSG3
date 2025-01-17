@@ -1,11 +1,11 @@
 #include "iostream"
-#include "List.h"
+#include "LinkedList.h"
 
-List::List(): head(nullptr), size(0) {}
+LinkedList::LinkedList(): head(nullptr), size(0) {}
 
-void List::insert_at_end(int data) {
+void LinkedList::insert_at_end(int data) {
     if (head == nullptr) {
-        head = new Node(data); //* Since the constructor of List
+        head = new Node(data); //* Since the constructor of LinkedList
     }
     else {
         Node* newNode = new Node(data);
@@ -20,7 +20,7 @@ void List::insert_at_end(int data) {
     size++;
 }
 
-void List::change_data_at_position(int data, int position) {
+void LinkedList::change_data_at_position(int data, int position) {
     //* Insert data at position, starting from 0 (equivalent to the [] operator)
     int i = 0;
     Node* current = head;
@@ -36,7 +36,7 @@ void List::change_data_at_position(int data, int position) {
     }
 }
 
-void List::print () {
+void LinkedList::print () {
     std::cout << "[";
     if (size != 0) {
         std::cout << head->data;
@@ -49,11 +49,11 @@ void List::print () {
     std::cout << "]\n";
 }
 
-int List::get_value(int position) {
+int LinkedList::get_value(int position) {
     int i = 0;
     if ((i > size) || (i < 0)) {
         std::cout << "Invalid position: " << i << "\n";
-        std::cout << "The size of the list is: " << size << "\n";
+        std::cout << "The size of the LinkedList is: " << size << "\n";
     }
     else {
         Node* current = head;
@@ -66,4 +66,12 @@ int List::get_value(int position) {
     return 0;
 }
 
-List::~List() {head->~Node();}
+LinkedList::~LinkedList() {
+    Node* current = head;
+    Node* temp = nullptr;
+    while (current != nullptr) {
+        temp = current;
+        current = current->next;
+        delete temp;
+    }
+}

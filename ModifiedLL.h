@@ -1,8 +1,8 @@
 #include <iostream>
-#include <List.h>
-#include <Node.h>
+#include "LinkedList.h"
+#include "Node.h"
 
-class ModifiedList: public List {
+class ModifiedLL: public LinkedList {
     public:
         Node* tail;
 

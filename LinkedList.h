@@ -1,12 +1,12 @@
 #pragma once
 #include "Node.h"
 
-class List {
+class LinkedList {
     public:
         Node* head;
         int size;
 
-        List();
+        LinkedList();
 
         virtual void insert_at_end(int data);
 
@@ -16,5 +16,5 @@ class List {
 
         int get_value(int position);
 
-        ~List();
+        virtual ~LinkedList();
 };

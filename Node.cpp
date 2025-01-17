@@ -1,17 +1,6 @@
 #include "Node.h"
 
-Node::Node(int value): data(value), next(nullptr) {} //* That syntaz initializes data and next with the values specified inside the parenthesis.
-
-Node::~Node() {
-    Node* current = next;
-    Node* temp = nullptr;
-    while (current != nullptr) {
-        temp = current;
-        current = current->next;
-        temp->next = nullptr; //* To break the link between the current and the next node, so a segmentation fault doesn't appear in consequence.
-        delete temp;
-    }
-}
+Node::Node(int value): data(value), next(nullptr) {} //* That syntax initializes data and next with the values specified inside the parenthesis.
 
 std::ostream& operator<<(std::ostream& os, const Node& node) {
     os << "Node data: " << node.data;
@@ -23,3 +12,7 @@ std::ostream& operator<<(std::ostream& os, const Node& node) {
     os << "\n";
     return os;
 };
+
+Node::~Node() {
+    next = nullptr; //* To break the link between the current and the next node, so a segmentation fault doesn't appear in consequence. May be unnecessary.
+}
