@@ -1,26 +1,83 @@
 class CustomList:
     def __init__(self):
-        self.data = []
+        self.head = None
+        self.tail = None
+        self.size = 0
 
-    def append(self, value):
-        self.data.append(value) #TODO: Make the method from scratch
+    def add(self, value):
+        new_node = Node(value)
+        if self.tail:
+            self.tail.next = new_node
+        else:
+            self.head = new_node
+        self.tail = new_node
+        self.size += 1
 
     def __getitem__(self, index):
-        return self.data[index]
+        current = self.head
+        for _ in range(index):
+            current = current.next
+        return current.value
 
     def __setitem__(self, index, value):
-        self.data[index] = value
+        current = self.head
+        for _ in range(index):
+            current = current.next
+        current.value = value
 
     def __len__(self):
-        return len(self.data)
+        return self.size
 
     def __iter__(self):
-        return iter(self.data)
+        current = self.head
+        while current:
+            yield current.value
+            current = current.next
+
+    def split(self, separator):
+        result = CustomList()
+        current_value = ""
+        for char in self:
+            if char == separator:
+                if current_value:
+                    result.add(current_value)
+                    current_value = ""
+            else:
+                current_value += char
+        if current_value:
+            result.add(current_value)
+        return result
+
+    def strip(self):
+        current = self.head
+        while current and current.value == " ":
+            current = current.next
+        self.head = current
+        
+        if self.head:
+            current = self.head
+            while current.next:
+                current = current.next
+            self.tail = current
+        
+        self.size = 0
+        current = self.head
+        while current:
+            self.size += 1
+            current = current.next
+
+
+class Node:
+    def __init__(self, value=None):
+        self.value = value
+        self.next = None
 
 
 class Vector:
     def __init__(self, size=0, default_value=None):
-        self.data = [default_value] * size
+        self.data = CustomList()
+        for _ in range(size):
+            self.data.add(default_value)
 
     def __getitem__(self, index):
         return self.data[index]
@@ -38,7 +95,6 @@ class Vector:
 class BooleanVector(Vector):
     def __init__(self, size=0):
         super().__init__(size, False)
-
 
 
 def is_jolly_sequence(n, values):
@@ -64,21 +120,27 @@ def main():
     while True:
         try:
             line = input()
-
-            v = Vector(0)
-
-            data = line.split() #TODO: Make the method from scratch
-            n = int(data[0])
+            if not line:
+                continue
+            
+            data = CustomList()
+            for char in line:
+                data.add(char)
+            
+            data.strip()
+           
+            parts = data.split(" ")
+            n = int(parts[0])  
             values = CustomList()
-            for i in range(1, len(data)):
-                values.append(int(data[i]))
+            for i in range(1, len(parts)):
+                values.add(int(parts[i]))  
 
             v = Vector(n)
             for i in range(n):
                 v[i] = values[i]
 
             result = is_jolly_sequence(n, v)
-            results.append(result)
+            results.add(result)
 
         except EOFError:
             break
