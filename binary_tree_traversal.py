@@ -21,13 +21,14 @@ class MyArray:
             return "Error: Index out of range"
         
 
-    def search_element(self, element) -> int:
+    def search_element_position(self, element: int) -> int:
         """Returns the position of the element if present. Otherwise, it prints an error message"""
         current = 0
-        while (self.get(current) != element and (current < self.capacity)):
+        while ((self.get(current) != element) and (current < self.size)):
             current += 1
         if current == self.capacity:
             print(f"The element {element} is not in {self}")
+            return None
         else:
             return current
 
@@ -39,6 +40,17 @@ class MyArray:
         if self.capacity != 0:
             show_str += str(self.get(self.size - 1))
         print(show_str)
+
+    
+    def pretty_print(self, end: int = None, start: int = 0) -> str:
+        if end == None: 
+            end = self.size
+        repr_str: str = "[ "
+        if end > start:
+            for i in range(start, end):
+                repr_str += str(self.get(i)) + " "
+        repr_str += "]"
+        return repr_str
 
 
     def slice(self, start: int = -1, end: int = -1) -> "MyArray":
@@ -75,7 +87,6 @@ class MyArray:
     
     
     def __repr__(self) -> str:
-        print(self.capacity, end= " ")
         repr_str: str = "["
         for i in range(self.size - 1):
             repr_str += str(self.get(i)) + " "
@@ -103,46 +114,35 @@ def convert_input_to_array(input: str, array_capacity: int) -> MyArray:
     return array
 
 
-def find_subtrees_ino(ino: MyArray, pre:MyArray) -> MyArray:
-    root_position: int = ino.search_element(pre.get(0))
-    left_inorder = ino.slice(0, root_position)
-    right_inorder = ino.slice(root_position + 1, len(ino))
-    left_preorder = pre.slice(1, root_position + 1)
-    right_preorder = pre.slice(root_position + 1, len(pre))
-    root: int = ino.get(root_position)
-    subtrees_orders: MyArray = MyArray(5)
-    subtrees_orders.add(left_inorder)
-    subtrees_orders.add(right_inorder)
-    subtrees_orders.add(left_preorder)
-    subtrees_orders.add(right_preorder)
-    subtrees_orders.add(root)
-
-    # print(f"Left Inorder: {left_inorder}")
-    # print(f"Right Inorder: {right_inorder}")
-    # print(f"Left Preorder: {left_preorder}")
-    # print(f"Right Preorder: {right_preorder}")
-    # print(f"Root: {root}")
-
-    return subtrees_orders
-
-def postorder(ino: MyArray, pre:MyArray) -> MyArray:
-    # print("count:", count, ino, pre)
-    if (len(ino) <= 1):
-        return ino
+def postorder(ino: MyArray, pre: MyArray, start_ino: int, end_ino: int, start_pre: int, end_pre: int) -> MyArray:
+    """Takes into account ino[start_ino:end_ino] and pre[start_pre:end_pre], both exclusive at the end, to make the calculations.
+    - ino: Inorder: Left -> Root -> Right
+    - pre: Preorder: Root -> Left -> Right
+    """
+    if (end_ino - start_ino == 1):
+        element = MyArray(1)
+        element.add(ino.get(start_ino))
+        return element
+    elif (end_ino - start_ino == 0):
+        empty = MyArray(0)
+        return empty
     else:
-        subtrees = find_subtrees_ino(ino, pre)
-        subtree_root = MyArray(1)
-        subtree_root.add(subtrees.get(4))
-        return postorder(subtrees.get(0), subtrees.get(2)) + postorder(subtrees.get(1), subtrees.get(3)) + subtree_root
+        root: int = pre.get(start_pre)
+        root_position: int = ino.search_element_position(root)
+        # print(ino.pretty_print(end_ino, start_ino), pre.pretty_print(end_pre, start_pre), root_position, root, start_pre, end_pre)
+        root_array = MyArray(1)
+        root_array.add(root)
+        #* Left + Right + Root
+        return postorder(ino, pre, start_ino, root_position, start_pre + 1, start_pre + 1 + (root_position - start_ino)) + postorder(ino, pre, root_position + 1, end_ino, start_pre + 1 + (root_position - start_ino), end_pre) + root_array
 
 
 def main() -> None:
     n = int(input())
     pre_input = input()
     ino_input = input()
-    pre: MyArray = convert_input_to_array(pre_input, n)
-    ino: MyArray = convert_input_to_array(ino_input, n)
-    pos: MyArray = postorder(ino, pre)
+    pre: MyArray = convert_input_to_array(pre_input, n) #* Root -> Left -> Right
+    ino: MyArray = convert_input_to_array(ino_input, n) #* Left -> Root -> Right
+    pos: MyArray = postorder(ino, pre, 0, n, 0, n)
     pos.show_elements()
 
 if __name__ == "__main__":

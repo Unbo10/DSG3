@@ -122,8 +122,8 @@ Array find_subtrees_ino(Array ino, Array pre) {
     int root_position = ino.search_element(pre.get(0));
     int root = ino.get(root_position);
     Array left_inorder = ino.slice(0, root_position);
-    Array right_inorder = ino.slice(root_position + 1, ino.capacity);
     Array left_preorder = pre.slice(1, root_position + 1);
+    Array right_inorder = ino.slice(root_position + 1, ino.capacity);
     Array right_preorder = pre.slice(root_position + 1, pre.capacity);
 
     Array subtrees_orders(5);
